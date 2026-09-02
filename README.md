@@ -1,0 +1,1 @@
+# cachy-hypr-zsh-kitty
