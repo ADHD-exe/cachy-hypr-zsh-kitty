@@ -101,6 +101,32 @@ Deliberately **not** loaded, with the reasoning kept in `.zplugins`:
 | `Ctrl-Z` | fzf-tab complete-word |
 | `Esc Esc` | prepend `sudo` to the current line |
 
+## Hyprland config
+
+`config/hypr/hyprland.conf` is intentionally empty (1 byte). The real settings
+live in `hyprland.lua`, which `require`s the modules under `config/*.lua`
+(animations, autostart, binds, colors, decorations, environment, inputs, misc,
+monitors, variables, windowrules, workspaces).
+
+This is CachyOS's Lua-based Hyprland config, and it is genuinely live — the
+compositor exposes an `hl.dsp` dispatcher table through `hyprctl repl`, and
+`hyprctl binds -j` reports the binds defined in `config/binds.lua` as
+registered. Verify with:
+
+```sh
+hyprctl binds -j | head
+hyprctl repl 'return type(hl.dsp)'   # -> table
+```
+
+Keybinds in `config/binds.lua` are edited with
+[hyprbinds](https://github.com/ADHD-exe/hyprcachy-keybinds), a TUI that joins
+the file against the compositor's live bind list so each row shows both its
+source line and whether Hyprland actually registered it.
+
+Session-wide environment variables belong in `config/uwsm/env`, not in any zsh
+file — uwsm starts the graphical session, so that is the only place GUI apps
+will see them.
+
 ## Requirements
 
 ```sh
@@ -133,10 +159,6 @@ These are real and unresolved, not TODO filler:
   Note `config/atuin/config.toml` points `db_path` at
   `~/.config/zsh/history-completions/atuin/history.db`, a directory that does not
   currently exist — create it or change the path before first run.
-- **`config/hypr/hyprland.conf` is empty (1 byte)** while the real settings live
-  in `hyprland.lua` + `config/*.lua`. Hyprland 0.56.2 does not read Lua natively
-  and no generator script was found, so how (or whether) the Lua tree is applied
-  is unverified. Check this before relying on the Hyprland config.
 - **`config/starship.toml`** was carried over from a different machine and has
   not been reviewed.
 - **swappy is not installed**, so the `ssedit` screenshot function in
