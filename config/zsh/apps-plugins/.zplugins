@@ -1,0 +1,150 @@
+# APPS & PLUGINS — third-party tool integrations that aren't reducible to
+# plain aliases/functions (those live in aliases-functions/.zalias and
+# .zfunctions, sourced from .zshrc).
+#
+# The oh-my-zsh *framework* is still not loaded — no $ZSH, no oh-my-zsh.sh, no
+# omz compinit. Individual omz plugin files are sourced directly instead; they
+# all work standalone. Everything else comes from a pacman package or is
+# vendored under $XDG_DATA_HOME/zsh/plugins.
+#
+# Sourced from .zshrc AFTER compinit, so compdef is available to any plugin
+# that wants it.
+#
+# Load order:
+#   0. autosuggestions + history-substring-search — latency-critical, early
+#   1. omz plugins (colored-man-pages, extract, sudo, zsh-bat, you-should-use)
+#   2. fzf-tab — hooks into completion, must follow compinit
+#   3. zoxide / atuin — directory + history jumping
+#   4. fzf key-bindings + completion
+#   5. yazi shell wrapper
+#   6. fast-syntax-highlighting — MUST load last (wraps every other widget)
+#
+# zsh-completions needs no sourcing: its pacman package installs functions into
+# /usr/share/zsh/site-functions, already in fpath, so compinit picks them up.
+
+_OMZ=/usr/share/oh-my-zsh
+
+# ── Stage 0: typing experience (latency critical) ──────────────────────────
+if [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+  ZSH_AUTOSUGGEST_USE_ASYNC=1
+  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
+fi
+
+if [[ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+  source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
+fi
+
+# ── Stage 1: oh-my-zsh plugins, sourced standalone ─────────────────────────
+# colored-man-pages needs $fg_bold / $reset_color from the `colors` module.
+autoload -Uz colors && colors
+
+# From $_OMZ/plugins (shipped with the oh-my-zsh package) and
+# $_OMZ/custom/plugins (cloned in separately).
+_omz_plugins=(
+  "$_OMZ/plugins/colored-man-pages"
+  "$_OMZ/plugins/extract"          # defines extract() + `alias x=extract`
+  "$_OMZ/plugins/sudo"             # ESC ESC prepends sudo to the line
+  "$_OMZ/custom/plugins/zsh-bat"   # cat -> bat, rcat -> real cat, MANPAGER
+  "$_OMZ/custom/plugins/you-should-use"
+)
+for _p in $_omz_plugins; do
+  if [[ -f "$_p/${_p:t}.plugin.zsh" ]]; then
+    fpath+=("$_p")
+    source "$_p/${_p:t}.plugin.zsh"
+  else
+    print -u2 "zplugins: omz plugin not found: $_p"
+  fi
+done
+unset _p _omz_plugins
+
+# NOTE — colored-man-pages vs zsh-bat overlap on `man`:
+# zsh-bat exports MANPAGER="... bat -l man -p", and man prefers MANPAGER over
+# PAGER, so *bat* is what actually renders man pages. colored-man-pages' less
+# colouring is therefore inert for `man` (it still wraps dman/debman and
+# provides the `colored` helper). To use colored-man-pages instead, unset
+# MANPAGER after this loop.
+
+# you-should-use: nag about aliases you have but didn't use.
+export YSU_MESSAGE_POSITION="after"   # after the command output, not before it
+export YSU_MODE=BESTMATCH             # one best alias, not every match
+
+# The omz git plugin is deliberately NOT loaded: .zalias section (5) already
+# carries 42 hand-picked git aliases extracted from it, and loading the plugin
+# would add 204 more on top of them — two sources of truth for the same names.
+
+# Likewise the omz `z` plugin: zoxide (Stage 3) is the maintained rewrite of it
+# and already provides the `z` command, so loading both would leave two
+# frecency databases fighting over one command name.
+
+# ── Stage 2: fzf-tab (after compinit; hooks into completion) ───────────────
+_FZF_TAB_HOME="$XDG_DATA_HOME/zsh/plugins/fzf-tab"
+if [[ -f "$_FZF_TAB_HOME/fzf-tab.plugin.zsh" ]]; then
+  source "$_FZF_TAB_HOME/fzf-tab.plugin.zsh"
+  LISTMAX=25
+  zic_custom_binding='^X^I'
+  bindkey '^Z' complete-word
+else
+  print "fzf-tab not found at $_FZF_TAB_HOME — clone Aloxaf/fzf-tab there to enable it." >&2
+fi
+unset _FZF_TAB_HOME
+
+# ── Stage 3: directory + history jumping ───────────────────────────────────
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"        # provides `z` and `zi`
+fi
+
+# atuin. Flags:  --disable-ctrl-r    (fzf owns CTRL-R, see Stage 4)
+#                --disable-up-arrow  (keep native up-arrow — omit for the TUI)
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh --disable-ctrl-r)"
+else
+  # Guarded, so it activates by itself once installed:
+  #   sudo pacman -S atuin && atuin import auto
+  :
+fi
+
+# ── Stage 4: fzf integration ───────────────────────────────────────────────
+if command -v fzf >/dev/null 2>&1; then
+  export FZF_BASE=/usr/share/fzf
+  source "$FZF_BASE/key-bindings.zsh"
+  source "$FZF_BASE/completion.zsh"
+
+  # fzf history search on CTRL-R. It was previously moved to CTRL-H, but many
+  # terminals send ^H for Backspace, which made Backspace open fzf.
+  bindkey '^R' fzf-history-widget
+
+  export FZF_CTRL_R_OPTS='--preview "echo {}"'
+fi
+# The omz `fzf` plugin is not sourced: it only hunts for an fzf install and
+# then sources these same two files, which we can point at directly.
+
+# ── Stage 5: yazi ──────────────────────────────────────────────────────────
+# `y` instead of plain `yazi`: yazi can only tell the shell where you ended up
+# via --cwd-file, so this wrapper reads it back and cds there on exit.
+if command -v yazi >/dev/null 2>&1; then
+  function y() {
+    local tmp cwd
+    tmp="$(mktemp -t 'yazi-cwd.XXXXXX')" || return 1
+    yazi "$@" --cwd-file="$tmp"
+    if IFS= read -r -d '' cwd < "$tmp" && [[ -n "$cwd" && "$cwd" != "$PWD" ]]; then
+      builtin cd -- "$cwd" || return 1
+    fi
+    command rm -f -- "$tmp"
+  }
+fi
+
+# ── Stage 6: syntax highlighting — MUST BE LAST ────────────────────────────
+# F-Sy-H has no official-repo package (AUR only), so it is vendored rather than
+# installed system-wide. The copy under $_OMZ/custom/plugins is NOT used, to
+# keep one source of truth. To update: re-clone z-shell/F-Sy-H there.
+_FSYH_HOME="$XDG_DATA_HOME/zsh/plugins/fast-syntax-highlighting"
+if [[ -f "$_FSYH_HOME/F-Sy-H.plugin.zsh" ]]; then
+  source "$_FSYH_HOME/F-Sy-H.plugin.zsh"
+else
+  print "fast-syntax-highlighting not found at $_FSYH_HOME — clone z-shell/F-Sy-H there to enable it." >&2
+fi
+unset _FSYH_HOME _OMZ

@@ -1,0 +1,792 @@
+# =============================================================================================                                                        
+#    MMM"""AMV       DB      `7MMF'      `7MMF'      DB       .M"""BGD `7MM"""YMM   .M"""BGD    
+#    M'   AMV       ;MM:       MM          MM       ;MM:     ,MI    "Y   MM    `7  ,MI    "Y    
+#    '   AMV       ,V^MM.      MM          MM      ,V^MM.    `MMB.       MM   D    `MMB.                
+#       AMV       ,M  `MM      MM          MM     ,M  `MM      `YMMNQ.   MMMMMM      `YMMNQ.  
+#      AMV   ,    ABMMMQMA     MM      ,   MM     ABMMMQMA   .     `MM   MM   Y  , .     `MM   
+#     AMV   ,M   A'     VML    MM     ,M   MM    A'     VML  MB     DM   MM     ,M MB     DM    
+#    AMVMMMMMM .AMA.   .AMMA..JMMMMMMMMM .JMML..AMA.   .AMMA.P"YBMMD" .JMMMMMMMMM P"YBMMD"    
+# =============================================================================================                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+#------------------------------ TABLE-OF-CONTENTS --------------------------------------------
+# (1)  ARCHLINUX   ---------------------------------------------------  line 15
+# (2)  BREW   --------------------------------------------------------  line 143
+# (3) DOCKER + DOCKER-COMPOSE ---------------------------------------   line 182
+# (4) EZA   ---------------------------------------------------------   line 251
+# (5) GIT    --------------------------------------------------------   line 322
+# (6) KITY-TERMINAL   -----------------------------------------------   line 365
+# (7) NMAP   --------------------------------------------------------   line 515
+# (8) NPM   --------------------------------------------------------    line 531
+# (9) SYSTEMD   ----------------------------------------------------    line 551
+# (10) WEB-SEARCH   -------------------------------------------------   line 639
+# (11)  QUALITY-OF-LIFE + CUSTOM ------------------------------------   line 738
+#---------------------------------------------------------------------------------------------
+#=============================== (1) ARCH LINUX=============================== 
+# archlinux — pacman / aura / pacaur / trizen / yay wrappers
+# Sources: oh-my-zsh archlinux plugin + former .zalias pacman/yay lines
+alias rmpkg="sudo pacman -Rsn"
+alias cleanch="sudo pacman -Scc"
+alias fixpacman="sudo rm /var/lib/pacman/db.lck"
+alias update="sudo pacman -Syu"
+# Help people new to Arch
+alias apt="man pacman"
+alias apt-get="man pacman"
+alias please="sudo"
+alias tb="nc termbin.com 9999"
+# Cleanup orphaned packages (deferred expansion — computed at invocation time, not sourcing time)
+alias cleanup='sudo pacman -Rsn $(pacman -Qtdq)'
+# Get the error messages from journalctl
+alias jctl="journalctl -p 3 -xb"
+# Recent installed packages
+alias rip="expac --timefmt='%Y-%m-%d %T' '%l\t%n %v' | sort | tail -200 | nl"
+# pacman
+alias pacupg='sudo pacman -Syu'
+alias pacin='sudo pacman -S'
+alias paclean='sudo pacman -Sc'
+alias pacins='sudo pacman -U'
+alias paclr='sudo pacman -Scc'
+alias pacre='sudo pacman -R'
+alias pacrem='sudo pacman -Rns'
+alias pacrep='pacman -Si'
+alias pacreps='pacman -Ss'
+alias pacloc='pacman -Qi'
+alias paclocs='pacman -Qs'
+alias pacinsd='sudo pacman -S --asdeps'
+alias pacmir='sudo pacman -Syy'
+alias paclsorphans='sudo pacman -Qdt'
+alias pacrmorphans='sudo pacman -Rs $(pacman -Qtdq)'
+alias pacfileupg='sudo pacman -Fy'
+alias pacfiles='pacman -F'
+alias pacls='pacman -Ql'
+alias pacown='pacman -Qo'
+alias pacupd="sudo pacman -Sy"
+alias pacmanallkeys='sudo pacman-key --refresh-keys'
+# aura
+alias auin='sudo aura -S'
+alias aurin='sudo aura -A'
+alias auclean='sudo aura -Sc'
+alias auclr='sudo aura -Scc'
+alias auins='sudo aura -U'
+alias auinsd='sudo aura -S --asdeps'
+alias aurinsd='sudo aura -A --asdeps'
+alias auloc='aura -Qi'
+alias aulocs='aura -Qs'
+alias aulst='aura -Qe'
+alias aumir='sudo aura -Syy'
+alias aurph='sudo aura -Oj'
+alias aure='sudo aura -R'
+alias aurem='sudo aura -Rns'
+alias aurep='aura -Si'
+alias aurrep='aura -Ai'
+alias aureps='aura -As --both'
+alias auras='aura -As --both'
+alias auupd="sudo aura -Sy"
+alias auupg='sudo sh -c "aura -Syu              && aura -Au"'
+alias ausu='sudo sh -c "aura -Syu --no-confirm && aura -Au --no-confirm"'
+alias auown="aura -Qqo"
+alias auls="aura -Qql"
+# pacaur
+alias pacclean='pacaur -Sc'
+alias pacclr='pacaur -Scc'
+alias paupg='pacaur -Syu'
+alias pasu='pacaur -Syu --noconfirm'
+alias pain='pacaur -S'
+alias pains='pacaur -U'
+alias pare='pacaur -R'
+alias parem='pacaur -Rns'
+alias parep='pacaur -Si'
+alias pareps='pacaur -Ss'
+alias paloc='pacaur -Qi'
+alias palocs='pacaur -Qs'
+alias palst='pacaur -Qe'
+alias paorph='pacaur -Qtd'
+alias painsd='pacaur -S --asdeps'
+alias pamir='pacaur -Syy'
+alias paupd="pacaur -Sy"
+# trizen
+alias trconf='trizen -C'
+alias trupg='trizen -Syua'
+alias trsu='trizen -Syua --noconfirm'
+alias trin='trizen -S'
+alias trclean='trizen -Sc'
+alias trclr='trizen -Scc'
+alias trins='trizen -U'
+alias trre='trizen -R'
+alias trrem='trizen -Rns'
+alias trrep='trizen -Si'
+alias trreps='trizen -Ss'
+alias trloc='trizen -Qi'
+alias trlocs='trizen -Qs'
+alias trlst='trizen -Qe'
+alias trorph='trizen -Qtd'
+alias trinsd='trizen -S --asdeps'
+alias trmir='trizen -Syy'
+alias trupd="trizen -Sy"
+# yay
+alias yaconf='yay -Pg'
+alias yaclean='yay -Sc'
+alias yaclr='yay -Scc'
+alias yaupg='yay -Syu'
+alias yasu='yay -Syu --noconfirm'
+alias yain='yay -S'
+alias yains='yay -U'
+alias yare='yay -R'
+alias yarem='yay -Rns'
+alias yarep='yay -Si'
+alias yareps='yay -Ss'
+alias yaloc='yay -Qi'
+alias yalocs='yay -Qs'
+alias yalst='yay -Qe'
+alias yaorph='yay -Qtd'
+alias yainsd='yay -S --asdeps'
+alias yamir='yay -Syy'
+alias yaupd="yay -Sy"
+#=============================== (2)  BREW =============================== 
+# brew — Homebrew wrappers
+# Source: oh-my-zsh brew plugin
+alias ba='brew autoremove'
+alias bcfg='brew config'
+alias bci='brew info --cask'
+alias bcin='brew install --cask'
+alias bcl='brew list --cask'
+alias bcn='brew cleanup'
+alias bco='brew outdated --cask'
+alias bcrin='brew reinstall --cask'
+alias bcubc='brew upgrade --cask && brew cleanup'
+alias bcubo='brew update && brew outdated --cask'
+alias bcup='brew upgrade --cask'
+alias bdr='brew doctor'
+alias bfu='brew upgrade --formula'
+alias bi='brew install'
+alias bih='brew install --HEAD'
+alias bl='brew list'
+alias bo='brew outdated'
+alias br='brew reinstall'
+alias brewp='brew pin'
+alias brewsp='brew list --pinned'
+alias brh='brew reinstall --HEAD'
+alias bs='brew search'
+alias bsl='brew services list'
+alias bsoff='brew services stop'
+alias bsoffa='bsoff --all'
+alias bson='brew services start'
+alias bsona='bson --all'
+alias bsr='brew services run'
+alias bsra='bsr --all'
+alias bu='brew update'
+alias bubo='brew update && brew outdated'
+alias bubu='bubo && bup'
+alias bubug='bubo && bugbc'
+alias bugbc='brew upgrade --greedy && brew cleanup'
+alias bup='brew upgrade'
+alias buz='brew uninstall --zap'
+#=============================== (3)  DOCKER + DOCKER-COMPOSE =============================== 
+# _dccmd used to be set by oh-my-zsh's docker-compose plugin, which is gone —
+# without it every dc* alias below expanded to a bare argument list
+# (`alias dcup=" up"`). Aliases capture its value at definition time, so it is
+# unset again at the end of the section.
+# Use the v1 standalone binary instead by setting: _dccmd='docker-compose'
+_dccmd='docker compose'
+
+alias dco="$_dccmd"
+alias dcup="$_dccmd up"
+alias dcupd="$_dccmd up -d"
+alias dcdown="$_dccmd down"
+alias dcdn="$_dccmd down"
+alias dcrestart="$_dccmd restart"
+alias dcstop="$_dccmd stop"
+alias dcstart="$_dccmd start"
+alias dce="$_dccmd exec"
+alias dcl="$_dccmd logs"
+alias dclf="$_dccmd logs -f"
+alias dclF="$_dccmd logs -f --tail 0"
+alias dcps="$_dccmd ps"
+alias dcpull="$_dccmd pull"
+alias dcb="$_dccmd build"
+alias dcupb="$_dccmd up --build"
+alias dcupdb="$_dccmd up -d --build"
+alias dcrm="$_dccmd rm"
+alias dcr="$_dccmd run"
+alias dck="$_dccmd kill"
+unset _dccmd
+# containers
+alias dbl='docker build'
+alias dcin='docker container inspect'
+alias dcls='docker container ls'
+alias dclsa='docker container ls -a'
+alias dcprune='docker container prune'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias dpo='docker container port'
+alias dr='docker container run'
+alias drit='docker container run -it'
+alias drm='docker container rm'
+alias 'drm!'='docker container rm -f'
+alias dst='docker container start'
+alias drs='docker container restart'
+alias dstopall='docker stop $(docker ps -q)'
+alias dsta='docker stop $(docker ps -q)'
+alias dstp='docker container stop'
+alias dsts='docker stats'
+alias dtop='docker top'
+alias dlogs='docker container logs'
+alias dlo='docker container logs'
+alias dexec='docker container exec -it'
+alias dxc='docker container exec'
+alias dxcit='docker container exec -it'
+alias dsprune='docker system prune'
+# images
+alias dib='docker image build'
+alias dii='docker image inspect'
+alias dils='docker image ls'
+alias dipu='docker image push'
+alias dipru='docker image prune -a'
+alias dirm='docker image rm'
+alias dit='docker image tag'
+alias dpu='docker pull'
+# networks / volumes
+alias dnc='docker network create'
+alias dncn='docker network connect'
+alias dndcn='docker network disconnect'
+alias dni='docker network inspect'
+alias dnls='docker network ls'
+alias dnprune='docker network prune'
+alias dnrm='docker network rm'
+alias dvi='docker volume inspect'
+alias dvls='docker volume ls'
+alias dvprune='docker volume prune'
+
+unset _dccmd
+
+#=============================== (4) EZA =============================== 
+# NOTE: this section is wrapped in `if`, NOT guarded with an early `return`.
+# .zalias is *sourced*, so a bare `return` here would abort the rest of the
+# file — silently taking git, kitty, nmap, npm, systemd, web-search and all
+# quality-of-life aliases with it.
+if (( $+commands[eza] )); then
+typeset -a _EZA_HEAD
+typeset -a _EZA_TAIL
+
+function _configure_eza() {
+  local _val
+  if zstyle -T ':omz:plugins:eza' 'show-group'; then
+    _EZA_HEAD+=("g")
+  fi
+  if zstyle -t ':omz:plugins:eza' 'header'; then
+    _EZA_HEAD+=("h")
+  fi
+  zstyle -s ':omz:plugins:eza' 'size-prefix' _val
+  case "${_val:l}" in
+    binary)
+      _EZA_HEAD+=("b")
+      ;;
+    none)
+      _EZA_HEAD+=("B")
+      ;;
+  esac
+  if zstyle -t ':omz:plugins:eza' 'dirs-first'; then
+    _EZA_TAIL+=("--group-directories-first")
+  fi
+  if zstyle -t ':omz:plugins:eza' 'git-status'; then
+    _EZA_TAIL+=("--git")
+  fi
+  if zstyle -t ':omz:plugins:eza' 'icons'; then
+    _EZA_TAIL+=("--icons=auto")
+  fi
+  zstyle -s ':omz:plugins:eza' 'color-scale' _val
+  if [[ $_val ]]; then
+    _EZA_TAIL+=("--color-scale=$_val")
+  fi
+  zstyle -s ':omz:plugins:eza' 'color-scale-mode' _val
+  if [[ $_val == (gradient|fixed) ]]; then
+    _EZA_TAIL+=("--color-scale-mode=$_val")
+  fi
+  zstyle -s ':omz:plugins:eza' 'time-style' _val
+  if [[ $_val ]]; then
+    _EZA_TAIL+=("--time-style='$_val'")
+  fi
+  if zstyle -t ":omz:plugins:eza" "hyperlink"; then
+    _EZA_TAIL+=("--hyperlink")
+  fi
+}
+
+_configure_eza
+function _alias_eza() {
+  local _head="${(j::)_EZA_HEAD}$2"
+  local _tail="${(j: :)_EZA_TAIL}"
+  alias "$1"="eza${_head:+ -}${_head}${_tail:+ }${_tail}${3:+ }$3"
+}
+_alias_eza la   la
+_alias_eza ldot ld ".*"
+_alias_eza lD   lD
+_alias_eza lDD  lDa
+_alias_eza ll   l
+_alias_eza ls
+_alias_eza lsd  d
+_alias_eza lsdl dl
+_alias_eza lS   "l -ssize"
+_alias_eza lT   "l -snewest"
+unfunction _alias_eza
+unfunction _configure_eza
+unset _EZA_HEAD
+unset _EZA_TAIL
+else
+  print "eza alias category: eza not found; skipping those aliases." >&2
+fi
+
+#=============================== (5)  GIT  =============================== 
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gcmb='git checkout $(git_main_branch)'
+alias gcd='git checkout $(git_develop_branch)'
+alias gco='git checkout'
+alias gcb='git checkout -b'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gcam='git commit --all --message'
+alias gcmsg='git commit --message'
+alias gca!='git commit --verbose --all --amend'
+alias gc!='git commit --verbose --amend'
+alias gb='git branch'
+alias gba='git branch --all'
+alias gbd='git branch --delete'
+alias gbD='git branch --delete --force'
+alias gbs='git bisect'
+alias gst='git status'
+alias gss='git status --short'
+alias gsb='git status --short --branch'
+alias gl='git log'
+alias glo='git log --oneline --decorate'
+alias glg='git log --stat'
+alias glgp='git log --stat --patch'
+alias gd='git diff'
+alias gds='git diff --staged'
+alias gdc='git diff --cached'
+alias gf='git fetch'
+alias gfa='git fetch --all --tags --prune --jobs=10'
+alias gp='git push'
+alias gpf='git push --force-with-lease'
+alias gpl='git pull'
+alias gpr='git pull --rebase'
+alias gsta='git stash push'
+alias gstp='git stash pop'
+alias gstl='git stash list'
+alias gstc='git stash clear'
+alias grb='git rebase'
+alias grbi='git rebase --interactive'
+alias gm='git merge'
+alias gmff='git merge --ff-only'
+#=============================== (6)  KITTY TERMINAL  =============================== 
+#  Guard — only define the kitty-specific bits when we're actually in kitty
+_in_kitty() { [[ "$TERM" == "xterm-kitty" || -n "$KITTY_WINDOW_ID" ]]; }
+# `kitten` is the standalone binary (kitty >= 0.29). Fall back to the old form.
+if (( $+commands[kitten] )); then
+  alias kt='kitten'
+else
+  alias kt='kitty +kitten'
+fi
+#  SSH / remote 
+alias kssh='kitten ssh'
+# without shell integration
+alias kssh-bare='kitten ssh --kitten=no-shell-integration'
+# Force a re-push of terminfo/config even if kitty thinks the host is current.
+alias kssh-fresh='kitten ssh --force-1st-hop'
+# Copy to the *local* clipboard from inside an SSH session (OSC 52).
+alias kcopy='kitten clipboard'
+alias kpaste='kitten clipboard --get-clipboard'
+# Fast file transfer over the existing kitty ssh connection — no scp/rsync,
+# no second auth. Works in both directions.
+#   ktransfer remote.txt .          (pull)
+#   ktransfer --direction=upload local.txt /remote/path
+alias ktransfer='kitten transfer'
+# Config management
+export KITTY_CONFIG_DIR="${KITTY_CONFIG_DIR:-$HOME/.config/kitty}"
+alias kconf='${EDITOR:-nvim} "$KITTY_CONFIG_DIR/kitty.conf"'
+alias kconf-dir='cd "$KITTY_CONFIG_DIR"'
+# Reload config in every running kitty instance (kitty listens for SIGUSR1).
+alias kreload='pkill -USR1 -x kitty && echo "kitty config reloaded"'
+# Show the fully-resolved config, including every include/theme override.
+alias kconf-dump='kitty --debug-config'
+alias kconf-check='kitty --debug-config | head -50'
+# Diff your config against kitty's defaults — great for auditing cruft.
+kconf-diff() {
+  local tmp; tmp="$(mktemp)"
+  kitty +runpy 'from kitty.config import commented_out_default_config; print(commented_out_default_config())' > "$tmp" 2>/dev/null
+  kitten diff "$tmp" "$KITTY_CONFIG_DIR/kitty.conf"
+  rm -f "$tmp"
+}
+alias ktheme='kitten themes'
+alias ktheme-dark='kitten themes --reload-in=all'
+alias kfont='kitten choose-fonts'          # kitty >= 0.33
+alias kicons='kitten icat --help'
+# List installed themes without launching the picker.
+alias ktheme-ls='kitten themes --dump-theme 2>/dev/null | head -1; ls ~/.config/kitty/*.conf'
+#  Kittens you'll actually use daily
+# Images in the terminal, at native resolution.
+alias icat='kitten icat'
+alias kimg='kitten icat --align=left'
+alias kimg-clear='kitten icat --clear'
+# Preview every image in the current dir, scaled to fit.
+alias kimgs='kitten icat --scale-up --place=80x40@0x0'
+# Side-by-side diff with syntax highlighting and image support.
+alias kdiff='kitten diff'
+# ripgrep with clickable hyperlinks — click a result, it opens in $EDITOR.
+alias kgrep='kitten hyperlinked_grep'
+alias krg='kitten hyperlinked_grep'
+# Unicode / emoji picker.
+alias kuni='kitten unicode_input'
+# Ask kitty to open a path/URL the way it would on click.
+alias kopen='kitty +open'
+# Desktop notification from the terminal (survives over SSH).
+# Usage: knotify "Build done" "all 400 tests green"
+knotify() { kitten notify "${1:-Notice}" "${2:-}"; }
+# Run a long command and notify when it finishes.
+# Usage: kwatch make -j16
+kwatch() {
+  "$@"
+  local rc=$?
+  kitten notify --urgency $(( rc == 0 ? 0 : 2 )) \
+    "$([[ $rc -eq 0 ]] && echo '✓ done' || echo "✗ failed ($rc)")" "$*"
+  return $rc
+}
+# Remote control  (requires in kitty.conf:)
+#      allow_remote_control yes
+#      listen_on unix:@mykitty
+#    and start kitty with:  kitty -o allow_remote_control=yes
+alias kc='kitty @ --to unix:@mykitty'
+alias kls='kitty @ --to unix:@mykitty ls'                      # JSON tree of windows/tabs
+alias ktree='kitty @ --to unix:@mykitty ls | jq -r ".[].tabs[].windows[].title"'
+# Font size on the fly.
+alias kfs='kitty @ --to unix:@mykitty set-font-size'           # kfs 14
+alias kfs+='kitty @ --to unix:@mykitty set-font-size --increment 1'
+alias kfs-='kitty @ --to unix:@mykitty set-font-size --increment -1'
+alias kfs0='kitty @ --to unix:@mykitty set-font-size 0'        # reset to config value
+# Opacity — needs `dynamic_background_opacity yes` in kitty.conf.
+alias kop='kitty @ --to unix:@mykitty set-background-opacity'  # kop 0.85
+alias kop-solid='kitty @ --to unix:@mykitty set-background-opacity 1'
+alias kop-glass='kitty @ --to unix:@mykitty set-background-opacity 0.75'
+# Live color changes without touching the config file.
+# Usage: kcolors ~/.config/kitty/themes/catppuccin-mocha.conf
+alias kcolors='kitty @ --to unix:@mykitty set-colors --all --configured'
+alias kcolors-reset='kitty @ --to unix:@mykitty set-colors --reset'
+# Type into another window, broadcast to all windows, etc.
+alias kbroadcast='kitten broadcast'
+alias ktitle='kitty @ --to unix:@mykitty set-tab-title'
+alias kwtitle='kitty @ --to unix:@mykitty set-window-title'
+# Spawn things into the current kitty instance.
+alias ksplit='kitty @ --to unix:@mykitty launch --location=vsplit --cwd=current'
+alias khsplit='kitty @ --to unix:@mykitty launch --location=hsplit --cwd=current'
+alias ktab='kitty @ --to unix:@mykitty launch --type=tab --cwd=current'
+alias koverlay='kitty @ --to unix:@mykitty launch --type=overlay'
+# Scrollback of the current window straight into $PAGER / a file.
+alias kscroll='kitty @ --to unix:@mykitty get-text --extent=all'
+kscroll-save() { kitty @ --to unix:@mykitty get-text --extent=all > "${1:-$HOME/kitty-scrollback-$(date +%F-%H%M%S).log}"; }
+# Launching — Hyprland window rules key off --class, so give things classes
+# Reuse one process for every window — much lighter on RAM.
+alias k='kitty --single-instance'
+alias kdetach='kitty --single-instance --detach'
+# Dedicated classes to target from hyprland.conf windowrulev2.
+alias kfloat='kitty --class kitty-float --single-instance'
+alias kscratch='kitty --class kitty-scratch --single-instance'
+alias kbig='kitty -o font_size=18 --class kitty-present'
+# Named session layouts: ~/.config/kitty/sessions/<name>.conf
+# Usage: ksession dev
+ksession() {
+  local f="$KITTY_CONFIG_DIR/sessions/${1:?usage: ksession <name>}.conf"
+  [[ -r "$f" ]] || { print -u2 "no session: $f"; return 1; }
+  kitty --session "$f"
+}
+alias ksession-ls='ls -1 "$KITTY_CONFIG_DIR/sessions/" 2>/dev/null | sed "s/\.conf$//"'
+# Save the current layout as a session file you can edit.
+ksession-save() {
+  local name="${1:?usage: ksession-save <name>}"
+  mkdir -p "$KITTY_CONFIG_DIR/sessions"
+  kitty @ --to unix:@mykitty ls > "$KITTY_CONFIG_DIR/sessions/$name.json"
+  echo "raw layout dumped to $KITTY_CONFIG_DIR/sessions/$name.json (hand-convert to .conf)"
+}
+# Panel kitten — bar/wallpaper-style windows via wlr-layer-shell. Works on
+# Hyprland. Handy for a system-monitor strip.
+# Usage: kpanel top 2 btop
+kpanel() {
+  local edge="${1:-top}" lines="${2:-2}"; shift 2 2>/dev/null
+  kitten panel --edge="$edge" --lines="$lines" "${@:-btop}"
+}
+alias kpanel-top='kitten panel --edge=top --lines=2'
+alias kpanel-bg='kitten panel --edge=background'
+#  Hyprland glue
+alias hyprkitty='hyprctl clients -j | jq -r ".[] | select(.class|test(\"kitty\")) | \"\(.class)\t\(.title)\t\(.workspace.name)\""'
+alias hyprkitty-count='hyprctl clients -j | jq "[.[] | select(.class|test(\"kitty\"))] | length"'
+# Move the focused kitty window to a workspace without leaving the keyboard.
+alias kmove='hyprctl dispatch movetoworkspace'
+#  CachyOS / Arch maintenance
+alias kitty-ver='kitty --version'
+alias kitty-update='paru -S kitty'
+alias kitty-git='paru -S kitty-git'
+alias kitty-files='pacman -Ql kitty | less'
+alias kitty-deps='pactree -d1 kitty'
+# Kitty's diff.
+alias kpacdiff='sudo DIFFPROG="kitten diff" pacdiff'
+#=============================== (7) NMAP   =============================== 
+alias nmap_open_ports="nmap --open"
+alias nmap_list_interfaces="nmap --iflist"
+alias nmap_slow="sudo nmap -sS -v -T1"
+alias nmap_fin="sudo nmap -sF -v"
+alias nmap_full="sudo nmap -sS -T4 -PE -PP -PS80,443 -PY -g 53 -A -p1-65535 -v"
+alias nmap_check_for_firewall="sudo nmap -sA -p1-65535 -v -T4"
+alias nmap_ping_through_firewall="nmap -PS -PA"
+alias nmap_fast="nmap -F -T5 --version-light --top-ports 300"
+alias nmap_detect_versions="sudo nmap -sV -p1-65535 -O --osscan-guess -T4 -Pn"
+alias nmap_check_for_vulns="nmap --script=vuln"
+alias nmap_full_udp="sudo nmap -sS -sU -T4 -A -v -PE -PS22,25,80 -PA21,23,80,443,3389 "
+alias nmap_traceroute="sudo nmap -sP -PE -PS22,25,80 -PA21,23,80,3389 -PU -PO --traceroute "
+alias nmap_full_with_scripts="sudo nmap -sS -sU -T4 -A -v -PE -PP -PS21,22,23,25,80,113,31339 -PA80,113,443,10042 -PO --script all "
+alias nmap_web_safe_osscan="sudo nmap -p 80,443 -O -v --osscan-guess --fuzzy "
+alias nmap_ping_scan="nmap -n -sP"
+#=============================== (8)  NPM  =============================== 
+alias npmg="npm i -g "
+alias npmS="npm i -S "
+alias npmD="npm i -D "
+alias npmF='npm i -f'
+alias npmE='PATH="$(npm bin)":"$PATH"'
+alias npmO="npm outdated"
+alias npmU="npm update"
+alias npmV="npm -v"
+alias npmL="npm list"
+alias npmL0="npm ls --depth=0"
+alias npmst="npm start"
+alias npmt="npm test"
+alias npmR="npm run"
+alias npmP="npm publish"
+alias npmI="npm init"
+alias npmi="npm info"
+alias npmSe="npm search"
+alias npmrd="npm run dev"
+alias npmrb="npm run build"
+#=============================== (9)  SYSTEMD  =============================== 
+user_commands=(
+  cat
+  get-default
+  help
+  is-active
+  is-enabled
+  is-failed
+  is-system-running
+  list-dependencies
+  list-jobs
+  list-sockets
+  list-timers
+  list-unit-files
+  list-units
+  show
+  show-environment
+  status
+)
+sudo_commands=(
+  add-requires
+  add-wants
+  cancel
+  daemon-reexec
+  daemon-reload
+  default
+  disable
+  edit
+  emergency
+  enable
+  halt
+  import-environment
+  isolate
+  kexec
+  kill
+  link
+  list-machines
+  load
+  mask
+  preset
+  preset-all
+  reenable
+  reload
+  reload-or-restart
+  reset-failed
+  rescue
+  restart
+  revert
+  set-default
+  set-environment
+  set-property
+  start
+  stop
+  switch-root
+  try-reload-or-restart
+  try-restart
+  unmask
+  unset-environment
+)
+power_commands=(
+  hibernate
+  hybrid-sleep
+  poweroff
+  reboot
+  suspend
+)
+for c in $user_commands; do
+  alias "sc-$c"="systemctl $c"
+  alias "scu-$c"="systemctl --user $c"
+done
+for c in $sudo_commands; do
+  alias "sc-$c"="sudo systemctl $c"
+  alias "scu-$c"="systemctl --user $c"
+done
+for c in $power_commands; do
+  alias "sc-$c"="systemctl $c"
+done
+unset c user_commands sudo_commands power_commands
+# --now commands
+alias sc-enable-now="sc-enable --now"
+alias sc-disable-now="sc-disable --now"
+alias sc-mask-now="sc-mask --now"
+alias scu-enable-now="scu-enable --now"
+alias scu-disable-now="scu-disable --now"
+alias scu-mask-now="scu-mask --now"
+# --failed commands
+alias scu-failed='systemctl --user --failed'
+alias sc-failed='systemctl --failed'
+#=============================== (10)  WEB-SEARCH  =============================== 
+function web_search() {
+  emulate -L zsh
+  typeset -A urls
+  urls=(
+    $ZSH_WEB_SEARCH_ENGINES
+    google          "https://www.google.com/search?q="
+    bing            "https://www.bing.com/search?q="
+    brave           "https://search.brave.com/search?q="
+    yahoo           "https://search.yahoo.com/search?p="
+    duckduckgo      "https://www.duckduckgo.com/?q="
+    startpage       "https://www.startpage.com/do/search?q="
+    yandex          "https://yandex.ru/yandsearch?text="
+    github          "https://github.com/search?q="
+    baidu           "https://www.baidu.com/s?wd="
+    ecosia          "https://www.ecosia.org/search?q="
+    goodreads       "https://www.goodreads.com/search?q="
+    qwant           "https://www.qwant.com/?q="
+    givero          "https://www.givero.com/search?q="
+    stackoverflow   "https://stackoverflow.com/search?q="
+    wolframalpha    "https://www.wolframalpha.com/input/?i="
+    archive         "https://web.archive.org/web/*/"
+    scholar         "https://scholar.google.com/scholar?q="
+    ask             "https://www.ask.com/web?q="
+    youtube         "https://www.youtube.com/results?search_query="
+    deepl           "https://www.deepl.com/translator#auto/auto/"
+    dockerhub       "https://hub.docker.com/search?q="
+    gems            "https://rubygems.org/search?query="
+    npmpkg          "https://www.npmjs.com/search?q="
+    packagist       "https://packagist.org/?query="
+    gopkg           "https://pkg.go.dev/search?m=package&q="
+    chatgpt         "https://chatgpt.com/?q="
+    grok            "https://grok.com/?q="
+    claudeai        "https://claude.ai/new?q="
+    reddit          "https://www.reddit.com/search/?q="
+    ppai            "https://www.perplexity.ai/search/new?q="
+    rscrate         "https://crates.io/search?q="
+    rsdoc           "https://docs.rs/releases/search?query="
+  )
+  if [[ -z "$urls[$1]" ]]; then
+    echo "Search engine '$1' not supported."
+    return 1
+  fi
+  if [[ $# -gt 1 ]]; then
+    local param="-P"
+    [[ "$urls[$1]" == *\?*= ]] && param=""
+    url="${urls[$1]}$(omz_urlencode $param ${(s: :)@[2,-1]})"
+  else
+    url="${(j://:)${(s:/:)urls[$1]}[1,2]}"
+  fi
+  open_command "$url"
+}
+alias bing='web_search bing'
+alias brs='web_search brave'
+alias google='web_search google'
+alias yahoo='web_search yahoo'
+alias ddg='web_search duckduckgo'
+alias sp='web_search startpage'
+alias yandex='web_search yandex'
+alias github='web_search github'
+alias baidu='web_search baidu'
+alias ecosia='web_search ecosia'
+alias goodreads='web_search goodreads'
+alias qwant='web_search qwant'
+alias givero='web_search givero'
+alias stackoverflow='web_search stackoverflow'
+alias wolframalpha='web_search wolframalpha'
+alias archive='web_search archive'
+alias scholar='web_search scholar'
+alias ask='web_search ask'
+alias youtube='web_search youtube'
+alias deepl='web_search deepl'
+alias dockerhub='web_search dockerhub'
+alias gems='web_search gems'
+alias npmpkg='web_search npmpkg'
+alias packagist='web_search packagist'
+alias gopkg='web_search gopkg'
+alias chatgpt='web_search chatgpt'
+alias grokcom='web_search grok'
+alias claudeai='web_search claudeai'
+alias reddit='web_search reddit'
+alias ppai='web_search ppai'
+alias rscrate='web_search rscrate'
+alias rsdoc='web_search rsdoc'
+# !bang searches
+alias wiki='web_search duckduckgo \!w'
+alias news='web_search duckduckgo \!n'
+alias map='web_search duckduckgo \!m'
+alias image='web_search duckduckgo \!i'
+alias ducky='web_search duckduckgo \!'
+# custom search engines from $ZSH_WEB_SEARCH_ENGINES, if set
+if [[ ${#ZSH_WEB_SEARCH_ENGINES} -gt 0 ]]; then
+  typeset -A engines
+  engines=($ZSH_WEB_SEARCH_ENGINES)
+  for key in ${(k)engines}; do
+    alias "$key"="web_search $key"
+  done
+  unset engines key
+fi
+#=============================== (11)  QUALITY-OF-LIFE + CUSTOM  =============================== 
+# cleanup / jctl / rip are defined in section (1) ARCH LINUX.
+alias rmd='rm -R -f'
+alias zz='exec zsh'
+alias c='clear'
+alias oc='opencode'
+alias ai='codex'
+# Quick-edit shortcuts
+alias al='${EDITOR:-xdg-open} $ZDOTDIR/aliases-functions/.zalias'
+alias funct='${EDITOR:-nvim} $ZDOTDIR/aliases-functions/.zfunctions'
+alias plug='${EDITOR:-nvim} $ZDOTDIR/apps-plugins/.zplugins'
+alias banner='${EDITOR:-nvim} $ZDOTDIR/banner-prompt/.zbanner'
+alias zenv='${EDITOR:-nvim} $ZDOTDIR/env-path/.zenv'
+alias kzsh='${EDITOR:-nvim} $ZDOTDIR/.zshrc'
+alias zprof='${EDITOR:-nvim} $ZDOTDIR/profile-user/.zprofile'
+alias zapps='${EDITOR:-nvim} $ZDOTDIR/apps-plugins/.zapps'
+alias zhist='${EDITOR:-nvim} $ZDOTDIR/history-completions/.zhistory'
+alias starconf='${EDITOR:-nvim} ~/.config/starship.toml'
+alias kit='${EDITOR:-nvim} ~/.config/kitty/kitty.conf'
+alias kitopen='${EDITOR:-nvim} ~/.config/kitty/open-actions.conf'
+alias kitlaunch='${EDITOR:-nvim} ~/.config/kitty/launch-actions.conf'
+alias kittheme='${EDITOR:-nvim} ~/.config/kitty/current-theme.conf'
+
+
+
+alias open="xdg-open"
+alias make="make -j$(nproc)"
+alias ninja="ninja -j$(nproc)"
+alias n="ninja"
+# c / rmpkg / cleanch / fixpacman / update are defined once in
+# section (1) ARCH LINUX — duplicates removed from here.
+alias h='history'
+alias hs='history | grep'
+alias hsi='history | grep -i'
+alias hl='history | less'
+alias man='nocorrect man'
+alias sudo='nocorrect sudo'
+alias su='nocorrect su'
+alias which-command='whence'
+# `x` is defined by the omz extract plugin (.zplugins Stage 1).
+

@@ -1,0 +1,120 @@
+add_newline = true
+
+format = """
+$username\
+$hostname\
+$directory\
+$fill\
+$status\
+$os\
+$battery\
+$time\
+$line_break\
+$character\
+"""
+
+right_format = ""
+
+[username]
+style_root = 'red bold'
+format = "[ ](fg:#0c0d2b)[󱩡 $user]($style)[ ](fg:#0c0d2b bg:#012115)"
+style_user = "bg:#0c0d2b fg:#5db1ff bold"
+show_always = true
+
+[hostname]
+format = "[ $hostname]($style)[ ](bg:#012115 fg:#1b0436)"
+style = "bg:#012115 fg:#11ffa8 bold "
+ssh_only = false
+
+[directory]
+format = "[$path ]($style)[ ]( fg:#1b0436)"
+style = "bg:#1b0436 fg:#a01cff bold"
+truncation_length = 4
+use_logical_path = false
+truncate_to_repo = false
+fish_style_pwd_dir_length = 1
+read_only = " 󰌾"
+home_symbol = "  "
+
+[git_branch]
+format = "[ 󰊢 $branch]($style)[ ](bg:#ff9092 fg:#004cff)"
+style = "bg:#004cff fg:#feffcb bold"
+truncation_length = 20
+truncation_symbol = "…"
+
+[git_status]
+format = "$ahead$staged$modified$untracked$deleted$renamed$behind[  ](bg:#004cff fg:#ff9092)"
+style = "fg:#feffcb bg:#004cff bold"
+conflicted = "="
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+up_to_date = ""
+untracked = "?${count}"
+staged = "+${count}"
+modified = "~${count}"
+deleted = "-${count}"
+renamed = "»${count}"
+stashed = "s${count}"
+
+[cmd_duration]
+min_time = 100
+format = "[⏱ ${h}h ${m}m ${s}s]($style)[  ](bg:#004cff fg:#ff9092)"
+show_milliseconds = true
+disabled = false
+style = "fg:#feffcb bg:#004cff bold"
+
+[battery]
+format = "[ $symbol$percentage ](bold bg:#002024 fg:#6cf8ff)(bold bg:#002024 fg:#002024)"
+full_symbol = " "
+[[battery.display]]
+threshold = 10
+style = "bold red"
+discharging_symbol = "🪫 "
+charging_symbol = "⚡"
+[[battery.display]]
+threshold = 30
+style = "bold yellow"
+discharging_symbol = " "
+[[battery.display]]
+threshold = 60
+style = "bold yellow"
+discharging_symbol = " "
+[[battery.display]]
+threshold = 100
+style = "bold green"
+discharging_symbol = ""
+
+[status]
+disabled = false
+format = "[ ](bg:#000000 fg:#2f0e05)[✘$status]($style)[ ](bg:none fg:#2f0e05)"
+style = "bold bg:#2f0e05 fg:#ffaf90"
+pipestatus = true
+symbol = "✘"
+
+[os]
+format = "[ ](fg:#2f2500)[ $symbol ](bold bg:#2f2500 fg:#ffd778)[ ](bg:#082222 fg:#2f2500)"
+disabled = false
+
+[os.symbols]
+Arch = "󰣇"
+CachyOS = "󰣇"
+NixOS = ""
+Ubuntu = ""
+Fedora = ""
+Debian = ""
+Alpine = ""
+EndeavourOS = ""
+Garuda = ""
+Manjaro = ""
+Pop = ""
+Linux = "󰌽"
+
+[time]
+disabled = false
+format = "[ ](bg:#082222 fg:#3a102d bold)[$time](bg:#3a102d fg:#ff22c4 bold)[ ](fg:#3a102d)"
+time_format = ' %H:%M:%S'
+
+[character]
+success_symbol = "[❯](#00ffd4 bold)"
+error_symbol = "[❯](#ff00c8 bold)"

@@ -1,0 +1,330 @@
+#==================================FUNCTIONS========================================
+#------------------------------TABLE-OF-CONTENTS------------------------------------
+#...................................................................................
+#
+# 1. abspath
+# 2. auto-ai
+# 3. clipcopy / clippaste
+# 4. SCREENSHOT FUNCTIONS (Wayland/sway/hyprland)
+# 5. _df
+# 6. WGET ARCHIVE + EXTRACT
+# 7. extract_and_remove
+# 8. findimg
+# 9. _fuzzy_change_directory
+# 10. _fuzzy_edit_search_file
+# 11. _fuzzy_edit_search_file_content
+# 12. _fuzzy_search_cmd_history
+# 13. handle_init_error
+# 14. install_from_git
+# 15. no_such_file_or_directory_handler
+# 16. omz_urlencode
+# 17. wget_archive_and_extract
+# 18. extract (provided by the omz plugin — see .zplugins)
+# 19. git_main_branch / git_develop_branch
+
+
+
+# ────────────────────────────────────────────────────────────────
+# 1. ABSPATH
+# ────────────────────────────────────────────────────────────────
+abspath() {
+    if [[ -d "$1" ]]; then
+        (cd "$1" && pwd)
+    elif [[ -f "$1" ]]; then
+        if [[ "$1" == */* ]]; then
+            echo "$(cd "${1%/*}" && pwd)/${1##*/}"
+        else
+            echo "$(pwd)/$1"
+        fi
+    fi
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 2. AUTO-AI
+# ────────────────────────────────────────────────────────────────
+auto-ai() {
+  local script="$HOME/.local/bin/auto-ai"
+
+  if [[ ! -x "$script" ]]; then
+    echo "auto-ai is not executable: $script"
+    return 1
+  fi
+
+  "$script" "$@"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 3. CLIPCOPY / CLIPPASTE
+# ────────────────────────────────────────────────────────────────
+# Cross-platform clipboard access, reconstructed from oh-my-zsh's core
+# lib/clipboard.zsh (not among the copied plugins — it's core, not a
+# plugin — so this is a minimal reimplementation, not a byte-exact copy).
+# Needed by: copybuffer, copyfile, copypath.
+function clipcopy() {
+  emulate -L zsh
+  local file=$1
+  if [[ "$OSTYPE" == darwin* ]]; then
+    if [[ -z "$file" ]]; then pbcopy; else pbcopy < "$file"; fi
+  elif [[ "$OSTYPE" == (cygwin|msys)* ]]; then
+    if [[ -z "$file" ]]; then cat > /dev/clipboard; else cat "$file" > /dev/clipboard; fi
+  elif [[ -n "$WAYLAND_DISPLAY" ]] && (( $+commands[wl-copy] )); then
+    if [[ -z "$file" ]]; then wl-copy; else wl-copy < "$file"; fi
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xclip] )); then
+    if [[ -z "$file" ]]; then xclip -in -selection clipboard; else xclip -in -selection clipboard < "$file"; fi
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xsel] )); then
+    if [[ -z "$file" ]]; then xsel --clipboard --input; else xsel --clipboard --input < "$file"; fi
+  elif (( $+commands[termux-clipboard-set] )); then
+    if [[ -z "$file" ]]; then termux-clipboard-set; else termux-clipboard-set < "$file"; fi
+  else
+    return 1
+  fi
+}
+
+function clippaste() {
+  emulate -L zsh
+  if [[ "$OSTYPE" == darwin* ]]; then
+    pbpaste
+  elif [[ "$OSTYPE" == (cygwin|msys)* ]]; then
+    cat /dev/clipboard
+  elif [[ -n "$WAYLAND_DISPLAY" ]] && (( $+commands[wl-paste] )); then
+    wl-paste --no-newline
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xclip] )); then
+    xclip -out -selection clipboard
+  elif [[ -n "$DISPLAY" ]] && (( $+commands[xsel] )); then
+    xsel --clipboard --output
+  elif (( $+commands[termux-clipboard-get] )); then
+    termux-clipboard-get
+  else
+    return 1
+  fi
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 4. SCREENSHOT FUNCTIONS (Wayland/sway/hyprland)
+# ────────────────────────────────────────────────────────────────
+
+if command -v grim &>/dev/null && command -v slurp &>/dev/null; then
+  ssfull() {
+    grim - | wl-copy
+    echo "Fullscreen screenshot copied to clipboard."
+  }
+
+  sssel() {
+    grim -g "$(slurp)" - | wl-copy
+    echo "Selection screenshot copied to clipboard."
+  }
+
+  # swappy is NOT installed — install it or this one fails despite the
+  # grim/slurp guard above passing.
+  ssedit() {
+    if ! command -v swappy &>/dev/null; then
+      print -u2 "ssedit: swappy is not installed"
+      return 1
+    fi
+    grim -g "$(slurp)" - | swappy -f -
+  }
+
+  ssfile() {
+    local dir="$HOME/Pictures/Screenshots"
+    mkdir -p "$dir"
+    local file="$dir/$(date "+%Y-%m-%d_%H-%M-%S").png"
+    grim -g "$(slurp)" "$file"
+    echo "Saved: $file"
+  }
+fi
+
+# ────────────────────────────────────────────────────────────────
+# 5. DUF WRAPPER
+# ────────────────────────────────────────────────────────────────
+_df() {
+    if [[ $# -ge 1 && -e "${@: -1}" ]]; then
+        duf "${@: -1}"
+    else
+        duf
+    fi
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 6. WGET ARCHIVE + EXTRACT
+# ────────────────────────────────────────────────────────────────
+wget_archive_and_extract() {
+  local url="$1"
+  local file="${url##*/}"
+
+  wget "$url" -O "$file" &&
+  extract "$file" &&
+  rm -f "$file"
+}
+
+
+
+# ────────────────────────────────────────────────────────────────
+# 7. EXTRACT AND REMOVE
+# ────────────────────────────────────────────────────────────────
+extract_and_remove() {
+  extract "$1" && rm -f "$1"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 8. FINDIMG (fzf + preview)
+# ────────────────────────────────────────────────────────────────
+findimg() {
+  local dir="${1:-.}"
+
+  find "$dir" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.heic" \) \
+    | fzf --preview 'kitty +kitten icat --clear --transfer-mode=file {}' \
+          --preview-window=right:60%:wrap
+}
+
+# ────────────────────────────────────────────────────────────────
+# 9. FZF: CHANGE DIRECTORY
+# ────────────────────────────────────────────────────────────────
+_fuzzy_change_directory() {
+    local selected_dir
+
+    selected_dir=$(find . -maxdepth 7 \
+      \( -name .git -o -name node_modules -o -name .venv -o -name target -o -name .cache \) -prune \
+      -o -type d -print 2>/dev/null \
+      | fzf --height 80% --layout=reverse --cycle --preview='ls -p {}') || return
+
+    [[ -d "$selected_dir" ]] && cd "$selected_dir"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 10. FZF: EDIT FILE
+# ────────────────────────────────────────────────────────────────
+_fuzzy_edit_search_file() {
+    local file
+    file=$(find . -maxdepth 5 -type f 2>/dev/null | fzf --height 80%) || return
+
+    "${EDITOR:-vim}" "$file"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 11. FZF: SEARCH CONTENT
+# ────────────────────────────────────────────────────────────────
+_fuzzy_edit_search_file_content() {
+    local file
+    file=$(rg -l "${1:-}" . | fzf --height 80%) || return
+
+    "${EDITOR:-vim}" "$file"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 12. FZF: HISTORY SEARCH
+# ────────────────────────────────────────────────────────────────
+_fuzzy_search_cmd_history() {
+  local selected
+  selected=$(history | fzf --height 80%) || return
+  print -z "${selected#* }"
+}
+
+# ────────────────────────────────────────────────────────────────
+# 13. HANDLE INIT ERROR
+# ────────────────────────────────────────────────────────────────
+handle_init_error() {
+    if [[ $? -ne 0 ]]; then
+        echo "Error during initialization."
+    fi
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 14. INSTALL FROM GIT
+# ────────────────────────────────────────────────────────────────
+install_from_git() {
+  local url="$1"
+  local dir="/tmp/${url##*/}"
+
+  git clone "$url" "$dir" || return 1
+  pushd "$dir" >/dev/null || return 1
+
+  make && sudo make install
+
+  popd >/dev/null
+  rm -rf "$dir"
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 15. NO SUCH FILE HANDLER
+# ────────────────────────────────────────────────────────────────
+no_such_file_or_directory_handler() {
+    local red='\e[1;31m' reset='\e[0m'
+    printf "${red}zsh: no such file or directory: %s${reset}\n" "$1"
+    return 127
+}
+
+
+# ────────────────────────────────────────────────────────────────
+# 16. OMZ_URLENCODE
+# ────────────────────────────────────────────────────────────────
+# Minimal URL-percent-encoder — a reimplementation (not a byte-exact copy)
+# of oh-my-zsh's core lib/functions.zsh omz_urlencode, which isn't among the
+# copied plugins. Needed by: web_search (in .zalias).
+function omz_urlencode() {
+  emulate -L zsh
+  local str="$1"
+  local -i i
+  local out=""
+  for (( i = 1; i <= ${#str}; i++ )); do
+    local c="${str[i]}"
+    case "$c" in
+      [a-zA-Z0-9.~_-]) out+="$c" ;;
+      " ") out+="%20" ;;
+      *) out+=$(printf '%%%02X' "'$c") ;;
+    esac
+  done
+  print -r -- "$out"
+}
+
+# ────────────────────────────────────────────────────────────────
+# 18. EXTRACT — provided by a plugin, not defined here
+# ────────────────────────────────────────────────────────────────
+# The oh-my-zsh `extract` plugin is sourced from .zplugins (Stage 1) and
+# defines extract() plus `alias x=extract`. The local reimplementation that
+# used to live here was removed so there is only one version; the upstream one
+# handles more formats and supports -r/--remove and -t/--to-directory.
+# extract_and_remove() and wget_archive_and_extract() above call into it.
+
+# ────────────────────────────────────────────────────────────────
+# 19. GIT_MAIN_BRANCH / GIT_DEVELOP_BRANCH
+# ────────────────────────────────────────────────────────────────
+# Reimplementations of the oh-my-zsh git-plugin helpers. Used by the `gcmb`
+# and `gcd` aliases in .zalias, which were calling undefined functions.
+git_main_branch() {
+  emulate -L zsh
+  command git rev-parse --git-dir &>/dev/null || return 1
+  local ref
+  for ref in main trunk mainline default stable master; do
+    if command git show-ref -q --verify "refs/heads/$ref" \
+    || command git show-ref -q --verify "refs/remotes/origin/$ref"; then
+      print -r -- "$ref"
+      return 0
+    fi
+  done
+  print -u2 "git_main_branch: no main branch found"
+  return 1
+}
+
+git_develop_branch() {
+  emulate -L zsh
+  command git rev-parse --git-dir &>/dev/null || return 1
+  local ref
+  for ref in dev devel develop development; do
+    if command git show-ref -q --verify "refs/heads/$ref"; then
+      print -r -- "$ref"
+      return 0
+    fi
+  done
+  print -u2 "git_develop_branch: no develop branch found"
+  return 1
+}

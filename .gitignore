@@ -1,0 +1,31 @@
+# ─── Secrets / machine-local state ──────────────────────────────────────────
+# kitty.conf.bak carried a plaintext remote_control_password; hypr keeps
+# timestamped .bak files of binds.lua and monitors.lua. None of that belongs
+# in a published repo.
+*.bak
+*.bak.*
+*.orig
+*.rej
+
+# ─── Shell history (can contain anything you have ever typed) ───────────────
+.zsh_history
+.bash_history
+*history*.db
+history.db
+
+# ─── Generated caches ──────────────────────────────────────────────────────
+.zcompdump*
+*.zwc
+.cache/
+__pycache__/
+
+# ─── Runtime / sockets ─────────────────────────────────────────────────────
+*.sock
+*.pid
+*.log
+
+# ─── Editor / OS noise ─────────────────────────────────────────────────────
+*.swp
+*.swo
+*~
+.DS_Store

@@ -1,0 +1,14 @@
+[theme]
+name = "rabbits-habits"
+parent = "default"
+
+[colors]
+Base = "#8688ff"
+Muted = "#5555ff"
+Title = "#97a7ff"
+Important = "#ff00c8"
+AlertError = "#eb50ff"
+AlertWarn = "#ffe066"
+AlertInfo = "#00aaff"
+Guidance = "#00ffd4"
+Annotation = "#4c94ff"

@@ -1,0 +1,69 @@
+
+## Note that these regular expressions are unanchored, i.e. if they don't start
+## with ^ or end with $, they'll match anywhere in the path.
+# cwd_filter = [
+#   "^/very/secret/directory",
+# ]
+db_path = "/home/rabbit/.config/zsh/history-completions/atuin/history.db"
+style = "full"
+inline_height = 16
+inline_height_shell_up_key_binding = 16
+keymap_cursor = { emacs = "blink-block", vim_insert = "blink-block", vim_normal = "blink-block" }
+enter_accept = true
+[search]
+search_mode = "daemon-fuzzy"
+filters = ["global", "host", "session", "directory"]
+search_mode_shell_up_key_binding = "fuzzy"
+filter_mode_shell_up_key_binding = "global"
+ctrl_n_shortcuts = true
+
+[daemon]
+enabled = true
+autostart = true
+
+[theme]
+name = "marine"
+debug = false
+
+[ui]
+columns = ["duration", "time", { type = "directory", width = 30 }, { type = "command", expand = true }]
+
+[stats]
+common_subcommands = [
+  "apt",
+  "cargo",
+  "composer",
+  "dnf",
+  "docker",
+  "git",
+  "go",
+  "ip",
+  "jj",
+  "kubectl",
+  "nix",
+  "nmcli",
+  "npm",
+  "pecl",
+  "pnpm",
+  "podman",
+  "port",
+  "systemctl",
+  "tmux",
+  "yarn",
+]
+common_prefix = [
+  "sudo",
+]
+
+[keys]
+accept_with_backspace = true
+accept_past_line_start = true
+[sync]
+records = true
+
+[ai]
+enabled = true
+
+
+[dotfiles]
+enabled = true

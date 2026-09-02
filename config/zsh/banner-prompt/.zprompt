@@ -1,0 +1,10 @@
+# ============================== PROMPT ==============================
+# Starship only. Powerlevel10k was previously sourced here as well — both were
+# active at once, and starship won simply by being evaluated last, so p10k was
+# a whole theme loaded for nothing. ~/.p10k.zsh is left on disk as a fallback
+# but nothing reads it; to switch back, swap the eval below for:
+#   source /usr/share/zsh-theme-powerlevel10k/powerlevel10k.zsh-theme
+#   [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+# (p10k's instant-prompt block would then need to go at the TOP of .zshrc.)
+
+eval "$(starship init zsh)"

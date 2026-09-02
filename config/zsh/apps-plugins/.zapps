@@ -1,0 +1,27 @@
+# ================================ APPS ================================
+# Per-tool environment: editor choice, and pushing stray dotfiles into XDG
+# directories. Sourced FIRST from .zshrc so everything below can rely on
+# $EDITOR being set.
+#
+# Not for third-party plugin loading — that's .zplugins.
+
+## EDITOR
+# Several aliases and functions fall back to ${EDITOR:-nvim} / ${EDITOR:-vim};
+# setting it here makes all of them agree.
+export EDITOR='nvim'
+export VISUAL='nvim'
+
+## XDG-ify tools that otherwise litter $HOME
+# The directory is created in profile-user/.zprofile.
+export LESSHISTFILE="$XDG_STATE_HOME/less/history"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python_history"   # needs python >= 3.13 (you have it)
+# WGETRC is deliberately unset: pointing it at a file that doesn't exist makes
+# every wget invocation fail with "Cannot read ...". Create
+# ~/.config/wget/wgetrc first, then uncomment.
+#export WGETRC="$XDG_CONFIG_HOME/wget/wgetrc"
+
+## Kept commented — enable only if you actually use these
+#export PARALLEL_HOME="$XDG_CONFIG_HOME/parallel"
+#export SCREENRC="$XDG_CONFIG_HOME/screen/screenrc"
+#export TERMINFO="$XDG_DATA_HOME/terminfo"
+#export TERMINFO_DIRS="$XDG_DATA_HOME/terminfo:/usr/share/terminfo"

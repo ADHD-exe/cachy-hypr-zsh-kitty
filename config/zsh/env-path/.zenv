@@ -1,0 +1,65 @@
+# ========================= ENVIRONMENT + PATH =========================
+# This file IS the zshenv: ~/.zshenv sets ZDOTDIR and sources this, so every
+# single zsh invocation runs it — login shells, interactive shells, scripts,
+# `zsh -c`, git hooks, editor subshells.
+#
+# Therefore: exports and PATH ONLY. Nothing interactive, nothing that prints,
+# nothing slow. Aliases, functions, plugins and the prompt are sourced from
+# .zshrc; login-only setup lives in profile-user/.zprofile.
+#
+# PATH used to live in a separate env-path/.zpath. It was merged in here
+# because the two files were doing the same job — exporting environment — and
+# had drifted into two different styles for it (a `export PATH="...:$PATH"`
+# string in one, a `path=()` array in the other). Everything below uses the
+# array form, which `typeset -U` can deduplicate.
+
+## ZDOTDIR
+# Already set by ~/.zshenv before this file is sourced; the :- default is here
+# so the file still works if it is ever sourced directly.
+export ZDOTDIR="${ZDOTDIR:-$HOME/.config/zsh}"
+
+## XDG DIRS
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
+export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+## PATH
+# `typeset -U path` keeps $path deduplicated automatically, so re-sourcing
+# this file (`exec zsh`, `zz`) never grows PATH.
+typeset -U path
+
+# Prepended, not appended: ~/.local/bin must beat /usr/bin, because
+# /etc/zsh/zprofile runs /etc/profile for login shells, which appends
+# /usr/local/sbin:/usr/local/bin:/usr/bin. Appending here would leave our
+# binaries behind the system ones.
+path=(
+  $HOME/.local/bin
+  $HOME/Documents/scripts
+  $path
+)
+export PATH
+
+## LANGUAGE
+# LANG alone is enough; LC_ALL is deliberately NOT set — it overrides every
+# other LC_* category and makes per-category overrides impossible.
+export LANG=en_US.UTF-8
+
+## LESS
+# -R  pass through color escapes
+# -F  quit immediately if output fits on one screen
+# (-X is deliberately omitted: it disables the alternate screen, so less would
+#  dump its output into your scrollback on exit and lose mouse support.)
+export PAGER=less
+export LESS='-R -F'
+# man-page colouring is NOT set here: the colored-man-pages plugin (.zplugins
+# Stage 1) sets the full LESS_TERMCAP_* set per-invocation, and these two
+# manual exports would only shadow part of it.
+
+## HISTORY
+# Native zsh (5.9+) parameter — commands matching this glob are never
+# written to $HISTFILE. Was previously read by oh-my-zsh's history lib;
+# zsh itself has honored it natively since 5.9, so it still works now that
+# the oh-my-zsh framework has been dropped.
+# (HISTFILE/HISTSIZE and the setopts live in history-completions/.zhistory.)
+export HISTORY_IGNORE="(&|[bf]g|c|clear|history|exit|q|pwd|* --help)"

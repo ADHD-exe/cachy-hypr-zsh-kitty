@@ -1,0 +1,7 @@
+# ============================== BANNER ==============================
+# Place a custom ascii image or banner here.
+# Guarded on interactive so it never contaminates script or pipe output.
+
+if [[ -o interactive ]]; then
+  command -v fastfetch >/dev/null && fastfetch
+fi
